@@ -1,0 +1,6 @@
+FROM alpine
+ADD apache-maven-3.9.5-bin.tar.gz /opt/
+RUN apk update && apk add openjdk11 git && \
+    sed  -i '/localRepository/ i\  <localRepository>/opt/mvnrepo</localRepository>' /opt/apache-maven-3.9.5/conf/settings.xml
+ENV PATH=/opt/apache-maven-3.9.5/bin:$PATH
+VOLUME /opt/mvnrepo/
