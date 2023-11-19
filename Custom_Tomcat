@@ -6,3 +6,14 @@ RUN apk update && apk add openjdk11 && \
 ENV PATH=/opt/tomcat9/bin:$PATH
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
+
+############################################
+FROM alpine
+RUN apk add --no-cache openjdk11 && \
+    wget -P /opt/ https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.83/bin/apache-tomcat-9.0.83.tar.gz && \
+    tar xvzf  /opt/apache-tomcat-9.0.83.tar.gz -C  /opt && \
+    mv /opt/apache-tomcat-9.0.83 /opt/tomcat9
+COPY server.xml /opt/tomcat9/conf/server.xml
+EXPOSE 8085
+ENV PATH="/opt/tomcat9/bin:$PATH"
+CMD ["catalina.sh","run"]
