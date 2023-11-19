@@ -1,0 +1,11 @@
+FROM alpine
+RUN apk add --no-cache bash && \
+    adduser --shell /bin/bash -D -h /opt/project chaitu && \
+    echo "chaitu:12345" | chpasswd && \
+    echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
+    apk add -U shadow
+COPY shell.sh /opt/project/shell.sh
+RUN chmod 050 /opt/project/shell.sh && \
+    usermod -aG root chaitu
+USER chaitu
+CMD ["/opt/project/shell.sh"]
