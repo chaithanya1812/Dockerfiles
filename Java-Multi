@@ -1,0 +1,24 @@
+FROM alpine as build
+ARG gitlink
+RUN apk add --no-cache git openjdk11 && \
+    wget -P /opt https://archive.apache.org/dist/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz && \
+    tar xzf /opt/apache-maven-3.8.5-bin.tar.gz -C  /opt
+ENV PATH="/opt/apache-maven-3.8.5/bin:${PATH}"
+WORKDIR /opt/project/
+RUN git clone $gitlink  && \
+    gitrepo=$(echo  ${gitlink}  | cut -d"/" -f5 | sed -n 's/.git//p')  && \
+    cd $gitrepo && \
+    mvn clean package && \
+    cp /opt/project/$gitrepo/target/*.jar /tmp/chaitu.jar
+WORKDIR /tmp
+FROM alpine
+RUN apk add --no-cache openjdk11
+COPY --from=build /tmp/chaitu.jar  /chaitu.jar
+CMD ["java","-jar","/chaitu.jar"]
+EXPOSE 8080
+
+
+#########################################################
+#Docker build-Commnads && and also
+
+--->  docker build -t mainp --build-arg gitlink=https://github.com/chaithanya1812/test8-dockerswarm-3-tier-.git .
