@@ -1,0 +1,15 @@
+FROM  alpine
+
+ADD   https://archive.apache.org/dist/maven/maven-3/3.6.2/binaries/apache-maven-3.6.2-bin.tar.gz /opt/
+
+RUN   apk update && \
+      apk add --no-cache openjdk11
+RUN   tar -xvzf /opt/apache-maven-3.6.2-bin.tar.gz -C /opt/
+
+ENV   PATH="/opt/apache-maven-3.6.2/bin/:$PATH"
+
+CMD   ["sh","-c","mvn --version"]
+
+LABEL mavenVersion="3.6.2" \
+      javaVersion="11"
+
