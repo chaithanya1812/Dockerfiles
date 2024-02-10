@@ -1,0 +1,12 @@
+# stage-1
+FROM alpine as build
+RUN apk add git && git clone https://github.com/MithunTechnologiesDevOps/spring-boot-mongo-docker.git
+ADD https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz /opt/
+RUN tar -xvzf /opt/apache-maven-3.6.0-bin.tar.gz -C /opt
+ENV PATH="/opt/apache-maven-3.6.0/bin:$PATH"
+RUN apk add openjdk11
+RUN cd spring-boot-mongo-docker && mvn clean package
+# stage-2
+FROM openjdk:8-alpine
+COPY --from=build /spring-boot-mongo-docker/target/spring-boot-mongo-1.0.jar /opt/chaitu.jar
+CMD ["java" ,"-jar","/opt/chaitu.jar"]
